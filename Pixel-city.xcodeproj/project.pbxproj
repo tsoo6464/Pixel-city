@@ -8,7 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		396EC3BF20289BF400CD126C /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 396EC3BE20289BF400CD126C /* AppDelegate.swift */; };
-		396EC3C120289BF400CD126C /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 396EC3C020289BF400CD126C /* ViewController.swift */; };
+		396EC3C120289BF400CD126C /* MapVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 396EC3C020289BF400CD126C /* MapVC.swift */; };
 		396EC3C420289BF400CD126C /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 396EC3C220289BF400CD126C /* Main.storyboard */; };
 		396EC3C620289BF400CD126C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 396EC3C520289BF400CD126C /* Assets.xcassets */; };
 		396EC3C920289BF400CD126C /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 396EC3C720289BF400CD126C /* LaunchScreen.storyboard */; };
@@ -17,7 +17,7 @@
 /* Begin PBXFileReference section */
 		396EC3BB20289BF400CD126C /* Pixel-city.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Pixel-city.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		396EC3BE20289BF400CD126C /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		396EC3C020289BF400CD126C /* ViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
+		396EC3C020289BF400CD126C /* MapVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapVC.swift; sourceTree = "<group>"; };
 		396EC3C320289BF400CD126C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		396EC3C520289BF400CD126C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		396EC3C820289BF400CD126C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
@@ -54,14 +54,54 @@
 		396EC3BD20289BF400CD126C /* Pixel-city */ = {
 			isa = PBXGroup;
 			children = (
+				396EC3D420289C4C00CD126C /* Utilities */,
+				396EC3D320289C4400CD126C /* Extensions */,
+				396EC3D220289C3F00CD126C /* Model */,
+				396EC3D120289C3900CD126C /* View */,
+				396EC3D020289C3100CD126C /* Controller */,
 				396EC3BE20289BF400CD126C /* AppDelegate.swift */,
-				396EC3C020289BF400CD126C /* ViewController.swift */,
 				396EC3C220289BF400CD126C /* Main.storyboard */,
 				396EC3C520289BF400CD126C /* Assets.xcassets */,
 				396EC3C720289BF400CD126C /* LaunchScreen.storyboard */,
 				396EC3CA20289BF400CD126C /* Info.plist */,
 			);
 			path = "Pixel-city";
+			sourceTree = "<group>";
+		};
+		396EC3D020289C3100CD126C /* Controller */ = {
+			isa = PBXGroup;
+			children = (
+				396EC3C020289BF400CD126C /* MapVC.swift */,
+			);
+			path = Controller;
+			sourceTree = "<group>";
+		};
+		396EC3D120289C3900CD126C /* View */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = View;
+			sourceTree = "<group>";
+		};
+		396EC3D220289C3F00CD126C /* Model */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		396EC3D320289C4400CD126C /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
+		396EC3D420289C4C00CD126C /* Utilities */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			path = Utilities;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -136,7 +176,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				396EC3C120289BF400CD126C /* ViewController.swift in Sources */,
+				396EC3C120289BF400CD126C /* MapVC.swift in Sources */,
 				396EC3BF20289BF400CD126C /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -275,6 +315,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = CFAPXCHZ99;
 				INFOPLIST_FILE = "Pixel-city/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "tw.nan.www.Pixel-city";
@@ -289,6 +330,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = CFAPXCHZ99;
 				INFOPLIST_FILE = "Pixel-city/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = "tw.nan.www.Pixel-city";
