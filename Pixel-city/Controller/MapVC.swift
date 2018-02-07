@@ -38,7 +38,7 @@ class MapVC: UIViewController, UIGestureRecognizerDelegate {
         addDoubleTap()
         // 添加collectionView
         collectionView = UICollectionView(frame: view.bounds, collectionViewLayout: flowLayout)
-        collectionView?.register(PhotoCell.self, forCellWithReuseIdentifier: "photoCell")
+        collectionView?.register(PhotoCell.self, forCellWithReuseIdentifier: PHOTO_CELL)
         collectionView?.backgroundColor = #colorLiteral(red: 0.5843137503, green: 0.8235294223, blue: 0.4196078479, alpha: 1)
         collectionView?.delegate = self
         collectionView?.dataSource = self
@@ -121,7 +121,7 @@ extension MapVC: MKMapViewDelegate {
             return nil
         }
         
-        let pinAnnotitaion = MKPinAnnotationView(annotation: annotation, reuseIdentifier: "droppablePin")
+        let pinAnnotitaion = MKPinAnnotationView(annotation: annotation, reuseIdentifier: DROPPABLE_PIN)
         // 修改顏色跟放下動畫
         pinAnnotitaion.pinTintColor = #colorLiteral(red: 0.9647058824, green: 0.6509803922, blue: 0.137254902, alpha: 1)
         pinAnnotitaion.animatesDrop = true
@@ -151,7 +151,7 @@ extension MapVC: MKMapViewDelegate {
         // 轉換成GPS座標
         let touchCoordinate = mapView.convert(touchPoint, toCoordinateFrom: mapView)
         // 建立大頭針
-        let annotation = DroppablePin(coordinate: touchCoordinate, identifier: "droppablePin")
+        let annotation = DroppablePin(coordinate: touchCoordinate, identifier: DROPPABLE_PIN)
         // 地圖上加入大頭針
         mapView.addAnnotation(annotation)
         // 設定座標範圍並將畫面以座標為中心點
@@ -193,7 +193,7 @@ extension MapVC: UICollectionViewDelegate, UICollectionViewDataSource {
     }
     // cell內容物
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "photoCell", for: indexPath) as! PhotoCell
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PHOTO_CELL, for: indexPath) as! PhotoCell
         return cell
     }
 }
