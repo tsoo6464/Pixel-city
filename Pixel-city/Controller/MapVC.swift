@@ -24,6 +24,9 @@ class MapVC: UIViewController, UIGestureRecognizerDelegate {
     let regionRadius = 1000.0
     var spinner: UIActivityIndicatorView?
     var progressLbl: UILabel?
+    
+    var collectionView: UICollectionView?
+    var flowLayout = UICollectionViewFlowLayout()
     // 視窗大小
     let screenSize = UIScreen.main.bounds
     
@@ -33,6 +36,13 @@ class MapVC: UIViewController, UIGestureRecognizerDelegate {
         locationManager.delegate = self
         configureLocationServices()
         addDoubleTap()
+        // 添加collectionView
+        collectionView = UICollectionView(frame: view.bounds, collectionViewLayout: flowLayout)
+        collectionView?.register(PhotoCell.self, forCellWithReuseIdentifier: "photoCell")
+        collectionView?.backgroundColor = #colorLiteral(red: 0.5843137503, green: 0.8235294223, blue: 0.4196078479, alpha: 1)
+        collectionView?.delegate = self
+        collectionView?.dataSource = self
+        pullUpView.addSubview(collectionView!)
     }
     // 設定雙擊地圖放置地圖大頭針手勢
     func addDoubleTap() {
@@ -42,7 +52,7 @@ class MapVC: UIViewController, UIGestureRecognizerDelegate {
         doubleTap.delegate = self
         mapView.addGestureRecognizer(doubleTap)
     }
-    //
+    // 設定下滑手勢關閉pullView
     func addSwipe() {
         let swipe = UISwipeGestureRecognizer(target: self, action: #selector(MapVC.animateViewDown))
         swipe.direction = .down
@@ -67,12 +77,32 @@ class MapVC: UIViewController, UIGestureRecognizerDelegate {
     // 添加載入圖片載入中的讀取標示
     func addSpinner() {
         spinner = UIActivityIndicatorView()
-        guard let spin = spinner else { return }
-        spin.activityIndicatorViewStyle = .whiteLarge
-        spin.center = CGPoint(x: (screenSize.width / 2) - (spin.frame.size.width / 2), y: 150 - (spin.frame.size.height))
-        spin.color = #colorLiteral(red: 0.2549019754, green: 0.2745098174, blue: 0.3019607961, alpha: 1)
-        spin.startAnimating()
-        pullUpView.addSubview(spin)
+        spinner?.activityIndicatorViewStyle = .whiteLarge
+        spinner?.center = CGPoint(x: (screenSize.width / 2) - ((spinner?.frame.size.width)! / 2), y: 150)
+        spinner?.color = #colorLiteral(red: 0.2549019754, green: 0.2745098174, blue: 0.3019607961, alpha: 1)
+        spinner?.startAnimating()
+        collectionView?.addSubview(spinner!)
+    }
+    // 移除載入讀取標示(不移除會一直重複增加)
+    func removeSpinner() {
+        if spinner != nil {
+            spinner?.removeFromSuperview()
+        }
+    }
+    // 在pullView上加入progressLbl
+    func addProgressLbl() {
+        progressLbl = UILabel()
+        progressLbl?.frame = CGRect(x: (screenSize.width / 2) - 120, y: 175, width: 240, height: 40)
+        progressLbl?.font = UIFont(name: "Avenir Next", size: 18)
+        progressLbl?.textColor = #colorLiteral(red: 0.2549019754, green: 0.2745098174, blue: 0.3019607961, alpha: 1)
+        progressLbl?.textAlignment = .center
+        collectionView?.addSubview(progressLbl!)
+    }
+    // 移除progressLbl
+    func removeProgressLbl() {
+        if progressLbl != nil {
+            progressLbl?.removeFromSuperview()
+        }
     }
     // 取得所在位置的畫面
     @IBAction func centerMapBtnPressed(_ sender: Any) {
@@ -109,9 +139,13 @@ extension MapVC: MKMapViewDelegate {
     // 放置地圖大頭針
     @objc func dropPin(sender: UITapGestureRecognizer) {
         removePin()
+        removeSpinner()
+        removeProgressLbl()
+        
         animateViewUp()
         addSwipe()
         addSpinner()
+        addProgressLbl()
         // 取得使用者點擊的螢幕座標
         let touchPoint = sender.location(in: mapView)
         // 轉換成GPS座標
@@ -145,5 +179,21 @@ extension MapVC: CLLocationManagerDelegate {
     // 獲得授權狀態時 設定畫面為位置中心
     func locationManager(_ manager: CLLocationManager, didChangeAuthorization status: CLAuthorizationStatus) {
         centerMapOnUserLocation()
+    }
+}
+
+extension MapVC: UICollectionViewDelegate, UICollectionViewDataSource {
+    // 幾個集合
+    func numberOfSections(in collectionView: UICollectionView) -> Int {
+        return 1
+    }
+    // 有幾個Item
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        return 4
+    }
+    // cell內容物
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "photoCell", for: indexPath) as! PhotoCell
+        return cell
     }
 }
