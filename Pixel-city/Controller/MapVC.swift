@@ -13,6 +13,8 @@ import CoreLocation
 class MapVC: UIViewController, UIGestureRecognizerDelegate {
     // Outlets
     @IBOutlet weak var mapView: MKMapView!
+    @IBOutlet weak var pullUpViewHeightConstraint: NSLayoutConstraint!
+    @IBOutlet weak var pullUpView: UIView!
     // Variables
     // 位置管理員
     var locationManager = CLLocationManager()
@@ -20,6 +22,10 @@ class MapVC: UIViewController, UIGestureRecognizerDelegate {
     let authorizationStatus = CLLocationManager.authorizationStatus()
     // 用來設定Region
     let regionRadius = 1000.0
+    var spinner: UIActivityIndicatorView?
+    var progressLbl: UILabel?
+    // 視窗大小
+    let screenSize = UIScreen.main.bounds
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -36,12 +42,45 @@ class MapVC: UIViewController, UIGestureRecognizerDelegate {
         doubleTap.delegate = self
         mapView.addGestureRecognizer(doubleTap)
     }
+    //
+    func addSwipe() {
+        let swipe = UISwipeGestureRecognizer(target: self, action: #selector(MapVC.animateViewDown))
+        swipe.direction = .down
+        pullUpView.addGestureRecognizer(swipe)
+    }
+    // 彈出隱藏在最底下的view
+    func animateViewUp() {
+        pullUpViewHeightConstraint.constant = 300
+        UIView.animate(withDuration: 0.3) {
+            // 更新view狀態
+            self.view.layoutIfNeeded()
+        }
+    }
+    // 將彈出的view收回底部並更新view狀態
+    @objc func animateViewDown() {
+        pullUpViewHeightConstraint.constant = 0
+        UIView.animate(withDuration: 0.3) {
+            // 更新view狀態
+            self.view.layoutIfNeeded()
+        }
+    }
+    // 添加載入圖片載入中的讀取標示
+    func addSpinner() {
+        spinner = UIActivityIndicatorView()
+        guard let spin = spinner else { return }
+        spin.activityIndicatorViewStyle = .whiteLarge
+        spin.center = CGPoint(x: (screenSize.width / 2) - (spin.frame.size.width / 2), y: 150 - (spin.frame.size.height))
+        spin.color = #colorLiteral(red: 0.2549019754, green: 0.2745098174, blue: 0.3019607961, alpha: 1)
+        spin.startAnimating()
+        pullUpView.addSubview(spin)
+    }
     // 取得所在位置的畫面
     @IBAction func centerMapBtnPressed(_ sender: Any) {
         if authorizationStatus == .authorizedAlways || authorizationStatus == .authorizedWhenInUse {
             centerMapOnUserLocation()
         }
     }
+    
 }
 
 extension MapVC: MKMapViewDelegate {
@@ -70,6 +109,9 @@ extension MapVC: MKMapViewDelegate {
     // 放置地圖大頭針
     @objc func dropPin(sender: UITapGestureRecognizer) {
         removePin()
+        animateViewUp()
+        addSwipe()
+        addSpinner()
         // 取得使用者點擊的螢幕座標
         let touchPoint = sender.location(in: mapView)
         // 轉換成GPS座標

@@ -6,7 +6,6 @@
     <dependencies>
         <deployment identifier="iOS"/>
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="13772"/>
-        <capability name="Alignment constraints with different attributes" minToolsVersion="5.1"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
     </dependencies>
@@ -63,30 +62,34 @@
                                     <action selector="centerMapBtnPressed:" destination="BYZ-38-t0r" eventType="touchUpInside" id="ukm-nE-JH5"/>
                                 </connections>
                             </button>
-                            <view contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="02u-Xh-NG5">
+                            <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="02u-Xh-NG5">
                                 <rect key="frame" x="0.0" y="667" width="375" height="0.0"/>
                                 <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
+                                <constraints>
+                                    <constraint firstAttribute="height" id="sPn-1o-DNW"/>
+                                </constraints>
                             </view>
                         </subviews>
                         <color key="backgroundColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
                         <constraints>
-                            <constraint firstItem="A9R-HI-Rpf" firstAttribute="bottom" secondItem="TzL-BC-c0V" secondAttribute="top" id="65Q-Vi-ACl"/>
                             <constraint firstItem="02u-Xh-NG5" firstAttribute="top" secondItem="A9R-HI-Rpf" secondAttribute="bottom" id="A7M-bk-eIX"/>
-                            <constraint firstItem="TzL-BC-c0V" firstAttribute="top" secondItem="CjO-Jg-WyH" secondAttribute="bottom" constant="20" id="Fem-LP-sXQ"/>
                             <constraint firstItem="A9R-HI-Rpf" firstAttribute="trailing" secondItem="8bC-Xf-vdC" secondAttribute="trailing" id="GZF-9r-Ycx"/>
                             <constraint firstItem="ZEL-CU-n6y" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="top" id="HB3-YA-Mkj"/>
                             <constraint firstItem="ZEL-CU-n6y" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="IJv-ip-T7x"/>
                             <constraint firstAttribute="trailing" secondItem="02u-Xh-NG5" secondAttribute="trailing" id="PuC-5M-uAg"/>
+                            <constraint firstItem="02u-Xh-NG5" firstAttribute="top" secondItem="CjO-Jg-WyH" secondAttribute="bottom" constant="20" id="T0y-Fc-Hc9"/>
+                            <constraint firstAttribute="bottom" secondItem="02u-Xh-NG5" secondAttribute="bottom" id="dHf-DQ-Y8Y"/>
                             <constraint firstItem="A9R-HI-Rpf" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="dTY-4I-6LB"/>
                             <constraint firstItem="ZEL-CU-n6y" firstAttribute="trailing" secondItem="8bC-Xf-vdC" secondAttribute="trailing" id="mCq-F4-xcQ"/>
                             <constraint firstItem="02u-Xh-NG5" firstAttribute="leading" secondItem="8bC-Xf-vdC" secondAttribute="leading" id="mHe-EK-sg0"/>
                             <constraint firstAttribute="trailingMargin" secondItem="CjO-Jg-WyH" secondAttribute="trailing" id="omN-Dv-I0U"/>
-                            <constraint firstItem="02u-Xh-NG5" firstAttribute="top" secondItem="TzL-BC-c0V" secondAttribute="bottom" id="qax-YD-iOk"/>
                             <constraint firstItem="A9R-HI-Rpf" firstAttribute="top" secondItem="8bC-Xf-vdC" secondAttribute="top" id="yI4-6g-ojc"/>
                         </constraints>
                     </view>
                     <connections>
                         <outlet property="mapView" destination="A9R-HI-Rpf" id="AP5-ME-Xx9"/>
+                        <outlet property="pullUpView" destination="02u-Xh-NG5" id="qQB-mg-ECp"/>
+                        <outlet property="pullUpViewHeightConstraint" destination="sPn-1o-DNW" id="rMV-PY-PF1"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
