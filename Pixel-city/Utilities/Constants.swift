@@ -19,3 +19,4 @@ typealias CompletionHandler = (_ success: Bool) -> ()
 // Identifier
 let DROPPABLE_PIN = "droppablePin"
 let PHOTO_CELL = "photoCell"
+let STORYBOARD_ID_POP = "PopVC"
