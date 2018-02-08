@@ -14,7 +14,10 @@ func flickrURL(forApiKey key: String, withAnnotation annotation: DroppablePin, a
     let url = "https://api.flickr.com/services/rest/?method=flickr.photos.search&api_key=\(API_KEY)&lat=\(annotation.coordinate.latitude)&lon=\(annotation.coordinate.longitude)&radius=1&radius_units=mi&per_page=\(number)&format=json&nojsoncallback=1"
     return url
 }
-
+func flickrPhotoInfo(forPhotoId id: String) -> String {
+    let url = "https://api.flickr.com/services/rest/?method=flickr.photos.getInfo&api_key=\(API_KEY)&photo_id=\(id)&format=json&nojsoncallback=1"
+    return url
+}
 typealias CompletionHandler = (_ success: Bool) -> ()
 // Identifier
 let DROPPABLE_PIN = "droppablePin"

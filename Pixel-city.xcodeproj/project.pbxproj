@@ -16,6 +16,8 @@
 		396EC3D8202B5CD400CD126C /* PhotoCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 396EC3D7202B5CD400CD126C /* PhotoCell.swift */; };
 		396EC3DA202B633000CD126C /* Constants.swift in Sources */ = {isa = PBXBuildFile; fileRef = 396EC3D9202B633000CD126C /* Constants.swift */; };
 		39B4F7C9202C7ACB00F2957B /* PopVC.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39B4F7C8202C7ACB00F2957B /* PopVC.swift */; };
+		39B4F7D7202CBAF700F2957B /* Photo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39B4F7D6202CBAF700F2957B /* Photo.swift */; };
+		39B4F7DD202CBD5400F2957B /* PhotoService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 39B4F7DC202CBD5400F2957B /* PhotoService.swift */; };
 		CA73325975765EB4AF58D3D4 /* Pods_Pixel_city.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 76CB3BF1F29FCACBCF191E95 /* Pods_Pixel_city.framework */; };
 /* End PBXBuildFile section */
 
@@ -31,6 +33,8 @@
 		396EC3D7202B5CD400CD126C /* PhotoCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoCell.swift; sourceTree = "<group>"; };
 		396EC3D9202B633000CD126C /* Constants.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Constants.swift; sourceTree = "<group>"; };
 		39B4F7C8202C7ACB00F2957B /* PopVC.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PopVC.swift; sourceTree = "<group>"; };
+		39B4F7D6202CBAF700F2957B /* Photo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Photo.swift; sourceTree = "<group>"; };
+		39B4F7DC202CBD5400F2957B /* PhotoService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoService.swift; sourceTree = "<group>"; };
 		40B12D1B0D7C99B9AAFBB33B /* Pods-Pixel-city.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Pixel-city.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Pixel-city/Pods-Pixel-city.debug.xcconfig"; sourceTree = "<group>"; };
 		76CB3BF1F29FCACBCF191E95 /* Pods_Pixel_city.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Pixel_city.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		E070578DC1B0BD26906B2952 /* Pods-Pixel-city.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Pixel-city.release.xcconfig"; path = "Pods/Target Support Files/Pods-Pixel-city/Pods-Pixel-city.release.xcconfig"; sourceTree = "<group>"; };
@@ -69,9 +73,9 @@
 		396EC3BD20289BF400CD126C /* Pixel-city */ = {
 			isa = PBXGroup;
 			children = (
+				39B4F7DB202CBD4600F2957B /* Services */,
+				39B4F7D4202CBAD800F2957B /* Model */,
 				396EC3D420289C4C00CD126C /* Utilities */,
-				396EC3D320289C4400CD126C /* Extensions */,
-				396EC3D220289C3F00CD126C /* Model */,
 				396EC3D120289C3900CD126C /* View */,
 				396EC3D020289C3100CD126C /* Controller */,
 				396EC3BE20289BF400CD126C /* AppDelegate.swift */,
@@ -101,26 +105,28 @@
 			path = View;
 			sourceTree = "<group>";
 		};
-		396EC3D220289C3F00CD126C /* Model */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Model;
-			sourceTree = "<group>";
-		};
-		396EC3D320289C4400CD126C /* Extensions */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Extensions;
-			sourceTree = "<group>";
-		};
 		396EC3D420289C4C00CD126C /* Utilities */ = {
 			isa = PBXGroup;
 			children = (
 				396EC3D9202B633000CD126C /* Constants.swift */,
 			);
 			path = Utilities;
+			sourceTree = "<group>";
+		};
+		39B4F7D4202CBAD800F2957B /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				39B4F7D6202CBAF700F2957B /* Photo.swift */,
+			);
+			path = Model;
+			sourceTree = "<group>";
+		};
+		39B4F7DB202CBD4600F2957B /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				39B4F7DC202CBD5400F2957B /* PhotoService.swift */,
+			);
+			path = Services;
 			sourceTree = "<group>";
 		};
 		57F3CB6C690A7B061B3C9AA7 /* Pods */ = {
@@ -271,6 +277,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				39B4F7DD202CBD5400F2957B /* PhotoService.swift in Sources */,
+				39B4F7D7202CBAF700F2957B /* Photo.swift in Sources */,
 				39B4F7C9202C7ACB00F2957B /* PopVC.swift in Sources */,
 				396EC3DA202B633000CD126C /* Constants.swift in Sources */,
 				396EC3D8202B5CD400CD126C /* PhotoCell.swift in Sources */,

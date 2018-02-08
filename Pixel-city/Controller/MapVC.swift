@@ -34,6 +34,7 @@ class MapVC: UIViewController, UIGestureRecognizerDelegate {
     var imageURLArray = [String]()
     // 存放圖片的Array
     var imageArray = [UIImage]()
+    var imageIdArray = [String]()
     
     
     // 視窗大小
@@ -52,6 +53,8 @@ class MapVC: UIViewController, UIGestureRecognizerDelegate {
         collectionView?.delegate = self
         collectionView?.dataSource = self
         pullUpView.addSubview(collectionView!)
+        
+        registerForPreviewing(with: self, sourceView: collectionView!)
     }
     // 設定雙擊地圖放置地圖大頭針手勢
     func addDoubleTap() {
@@ -152,9 +155,10 @@ extension MapVC: MKMapViewDelegate {
         cancelAllSessions()
         imageArray = []
         imageURLArray = []
+        imageIdArray = []
         collectionView?.reloadData()
         
-        animateViewUp()
+        
         addSwipe()
         addSpinner()
         addProgressLbl()
@@ -166,6 +170,7 @@ extension MapVC: MKMapViewDelegate {
         let annotation = DroppablePin(coordinate: touchCoordinate, identifier: DROPPABLE_PIN)
         // 地圖上加入大頭針
         mapView.addAnnotation(annotation)
+        animateViewUp()
         // 設定座標範圍並將畫面以座標為中心點
         let coordinateRegion = MKCoordinateRegionMakeWithDistance(touchCoordinate, regionRadius * 2.0, regionRadius * 2.0)
         mapView.setRegion(coordinateRegion, animated: true)
@@ -198,6 +203,7 @@ extension MapVC: MKMapViewDelegate {
                 for photo in photosDictArray {
                     let postUrl = "https://farm\(photo["farm"]!).staticflickr.com/\(photo["server"]!)/\(photo["id"]!)_\(photo["secret"]!)_h_d.jpg"
                     self.imageURLArray.append(postUrl)
+                    self.imageIdArray.append(photo["id"] as! String)
                 }
                 completion(true)
             } else {
@@ -223,6 +229,27 @@ extension MapVC: MKMapViewDelegate {
                     debugPrint(response.result.error as Any)
                 }
             })
+        }
+    }
+    func retrievePhotoInfo(forId Id: String, forImage image: UIImage,  completion: @escaping CompletionHandler) {
+        Alamofire.request(flickrPhotoInfo(forPhotoId: Id)).responseJSON { (response) in
+            if response.result.error == nil {
+                PhotoService.instance.photo.removeAll()
+                guard let json = response.result.value as? Dictionary<String, AnyObject> else { return }
+                let photoDict = json["photo"] as! Dictionary<String, AnyObject>
+                let photoOwner = photoDict["owner"] as! Dictionary<String, AnyObject>
+                let photoOwnerName = photoOwner["username"] as! String
+                let photoTitle = photoDict["title"] as! Dictionary<String, AnyObject>
+                let photoTitleContent = photoTitle["_content"] as! String
+                let photoDescription = photoDict["description"] as! Dictionary<String, AnyObject>
+                let photoDescriptionContent = photoDescription["_content"] as! String
+                let newPhoto = Photo(image: image, title: photoTitleContent, description: photoDescriptionContent, ownerName: photoOwnerName)
+            PhotoService.instance.photo.append(newPhoto)
+                completion(true)
+            } else {
+                completion(false)
+                debugPrint(response.result.error as Any)
+            }
         }
     }
     // 取消所有執行的任務
@@ -266,9 +293,28 @@ extension MapVC: UICollectionViewDelegate, UICollectionViewDataSource {
         cell.addSubview(imageView)
         return cell
     }
+    // 點擊到的圖片
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         guard let popVC = storyboard?.instantiateViewController(withIdentifier: STORYBOARD_ID_POP) as? PopVC else { return }
-        popVC.initData(forImage: imageArray[indexPath.row])
-        present(popVC, animated: true, completion: nil)
+        retrievePhotoInfo(forId: self.imageIdArray[indexPath.row], forImage: self.imageArray[indexPath.row], completion: { (success) in
+            if success {
+                self.present(popVC, animated: true, completion: nil)
+            }
+        })
+    }
+}
+// 3D Touch
+extension MapVC: UIViewControllerPreviewingDelegate {
+    
+    func previewingContext(_ previewingContext: UIViewControllerPreviewing, viewControllerForLocation location: CGPoint) -> UIViewController? {
+        guard let indexPath = collectionView?.indexPathForItem(at: location), let cell = collectionView?.cellForItem(at: indexPath) else { return nil }
+        guard let popVC = storyboard?.instantiateViewController(withIdentifier: STORYBOARD_ID_POP) as? PopVC else { return nil }
+        retrievePhotoInfo(forId: self.imageIdArray[indexPath.row], forImage: self.imageArray[indexPath.row], completion: { (success) in })
+        previewingContext.sourceRect = cell.contentView.frame
+        return popVC
+    }
+    
+    func previewingContext(_ previewingContext: UIViewControllerPreviewing, commit viewControllerToCommit: UIViewController) {
+        show(viewControllerToCommit, sender: self)
     }
 }

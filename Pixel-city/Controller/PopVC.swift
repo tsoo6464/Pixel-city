@@ -11,8 +11,12 @@ import UIKit
 class PopVC: UIViewController, UIGestureRecognizerDelegate {
     // Outlets
     @IBOutlet weak var popImageView: UIImageView!
+    @IBOutlet weak var titleLbl: UILabel!
+    @IBOutlet weak var descriptionLbl: UILabel!
+    @IBOutlet weak var ownerNameLbl: UILabel!
     // Varialbe
     var passedImage: UIImage!
+    var passedTitle: String!
     
     func initData(forImage image: UIImage) {
         self.passedImage = image
@@ -20,7 +24,17 @@ class PopVC: UIViewController, UIGestureRecognizerDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        popImageView.image = passedImage
+        let photo = PhotoService.instance.photo[0]
+        popImageView.image = photo.image
+        titleLbl.text = photo.title
+        descriptionLbl.text = photo.description
+        ownerNameLbl.text = photo.ownerName
+        if photo.title == "" {
+            titleLbl.text = "照片沒有標題"
+        }
+        if photo.description == "" {
+            descriptionLbl.text = "照片沒有描述"
+        }
         addDoubleTap()
     }
     // 添加雙擊螢幕回上一頁手勢
