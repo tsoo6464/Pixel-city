@@ -9,6 +9,8 @@
 import UIKit
 import MapKit
 import CoreLocation
+import Alamofire
+import AlamofireImage
 
 class MapVC: UIViewController, UIGestureRecognizerDelegate {
     // Outlets
@@ -22,11 +24,18 @@ class MapVC: UIViewController, UIGestureRecognizerDelegate {
     let authorizationStatus = CLLocationManager.authorizationStatus()
     // 用來設定Region
     let regionRadius = 1000.0
-    var spinner: UIActivityIndicatorView?
-    var progressLbl: UILabel?
-    
+    // collectionView
     var collectionView: UICollectionView?
     var flowLayout = UICollectionViewFlowLayout()
+    // 放在collectionView上的UI
+    var spinner: UIActivityIndicatorView?
+    var progressLbl: UILabel?
+    // 存放圖片下載的URL的Array
+    var imageURLArray = [String]()
+    // 存放圖片的Array
+    var imageArray = [UIImage]()
+    
+    
     // 視窗大小
     let screenSize = UIScreen.main.bounds
     
@@ -68,6 +77,7 @@ class MapVC: UIViewController, UIGestureRecognizerDelegate {
     }
     // 將彈出的view收回底部並更新view狀態
     @objc func animateViewDown() {
+        cancelAllSessions()
         pullUpViewHeightConstraint.constant = 0
         UIView.animate(withDuration: 0.3) {
             // 更新view狀態
@@ -93,7 +103,7 @@ class MapVC: UIViewController, UIGestureRecognizerDelegate {
     func addProgressLbl() {
         progressLbl = UILabel()
         progressLbl?.frame = CGRect(x: (screenSize.width / 2) - 120, y: 175, width: 240, height: 40)
-        progressLbl?.font = UIFont(name: "Avenir Next", size: 18)
+        progressLbl?.font = UIFont(name: "Avenir Next", size: 14)
         progressLbl?.textColor = #colorLiteral(red: 0.2549019754, green: 0.2745098174, blue: 0.3019607961, alpha: 1)
         progressLbl?.textAlignment = .center
         collectionView?.addSubview(progressLbl!)
@@ -141,6 +151,7 @@ extension MapVC: MKMapViewDelegate {
         removePin()
         removeSpinner()
         removeProgressLbl()
+        cancelAllSessions()
         
         animateViewUp()
         addSwipe()
@@ -157,11 +168,70 @@ extension MapVC: MKMapViewDelegate {
         // 設定座標範圍並將畫面以座標為中心點
         let coordinateRegion = MKCoordinateRegionMakeWithDistance(touchCoordinate, regionRadius * 2.0, regionRadius * 2.0)
         mapView.setRegion(coordinateRegion, animated: true)
+        // 下載大頭針指到的位置周圍的照片
+        retrieveUrls(forAnnotation: annotation) { (success) in
+            if success {
+                self.retrieveImages(completion: { (success) in
+                    if success {
+                        self.removeSpinner()
+                        self.removeProgressLbl()
+                        // reload collectionView
+                    }
+                })
+            }
+        }
     }
     // 移除所有大頭針
     func removePin() {
         for annotation in mapView.annotations {
             mapView.removeAnnotation(annotation)
+        }
+    }
+    // 獲得照片的URL
+    func retrieveUrls(forAnnotation annotation: DroppablePin, completion: @escaping CompletionHandler) {
+        imageURLArray = []
+        
+        Alamofire.request(flickrURL(forApiKey: API_KEY, withAnnotation: annotation, andNumberOfPhoto: 40)).responseJSON { (response) in
+            if response.result.error == nil {
+                guard let json = response.result.value as? Dictionary<String, AnyObject> else { return }
+                let photosDict = json["photos"] as! Dictionary<String, AnyObject>
+                let photosDictArray = photosDict["photo"] as! [Dictionary<String, AnyObject>]
+                for photo in photosDictArray {
+                    let postUrl = "https://farm\(photo["farm"]!).staticflickr.com/\(photo["server"]!)/\(photo["id"]!)_\(photo["secret"]!)_h_d.jpg"
+                    self.imageURLArray.append(postUrl)
+                }
+                completion(true)
+            } else {
+                completion(false)
+                debugPrint(response.result.error as Any)
+            }
+        }
+    }
+    // 獲得圖片並加入到imageArray裡面
+    func retrieveImages(completion: @escaping CompletionHandler) {
+        imageArray = []
+        for url in imageURLArray {
+            Alamofire.request(url).responseImage(completionHandler: { (response) in
+                if response.result.error == nil {
+                    guard let image = response.result.value else { return }
+                    self.imageArray.append(image)
+                    // progressLbl秀出已經載入幾張圖片了
+                    self.progressLbl?.text = "\(self.imageArray.count)/40 IMAGES DOWNLOADED"
+                    if self.imageArray.count == self.imageURLArray.count {
+                        completion(true)
+                    }
+                } else {
+                    completion(false)
+                    debugPrint(response.result.error as Any)
+                }
+            })
+        }
+    }
+    // 取消所有執行的任務
+    func cancelAllSessions() {
+        Alamofire.SessionManager.default.session.getTasksWithCompletionHandler { (sessionDataTask, uploadData, downloadData) in
+            sessionDataTask.forEach({ $0.cancel() })
+            downloadData.forEach({ $0.cancel() })
         }
     }
 }
