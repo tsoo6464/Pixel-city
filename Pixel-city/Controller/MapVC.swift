@@ -48,7 +48,7 @@ class MapVC: UIViewController, UIGestureRecognizerDelegate {
         // 添加collectionView
         collectionView = UICollectionView(frame: view.bounds, collectionViewLayout: flowLayout)
         collectionView?.register(PhotoCell.self, forCellWithReuseIdentifier: PHOTO_CELL)
-        collectionView?.backgroundColor = #colorLiteral(red: 0.5843137503, green: 0.8235294223, blue: 0.4196078479, alpha: 1)
+        collectionView?.backgroundColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1)
         collectionView?.delegate = self
         collectionView?.dataSource = self
         pullUpView.addSubview(collectionView!)
@@ -130,14 +130,12 @@ extension MapVC: MKMapViewDelegate {
         if annotation is MKUserLocation {
             return nil
         }
-        
         let pinAnnotitaion = MKPinAnnotationView(annotation: annotation, reuseIdentifier: DROPPABLE_PIN)
         // 修改顏色跟放下動畫
         pinAnnotitaion.pinTintColor = #colorLiteral(red: 0.9647058824, green: 0.6509803922, blue: 0.137254902, alpha: 1)
         pinAnnotitaion.animatesDrop = true
         return pinAnnotitaion
     }
-    
     // 取得用戶位置 畫面移動到以座標為中心的位置
     func centerMapOnUserLocation() {
         // 取得座標資訊
@@ -152,6 +150,9 @@ extension MapVC: MKMapViewDelegate {
         removeSpinner()
         removeProgressLbl()
         cancelAllSessions()
+        imageArray = []
+        imageURLArray = []
+        collectionView?.reloadData()
         
         animateViewUp()
         addSwipe()
@@ -175,7 +176,7 @@ extension MapVC: MKMapViewDelegate {
                     if success {
                         self.removeSpinner()
                         self.removeProgressLbl()
-                        // reload collectionView
+                        self.collectionView?.reloadData()
                     }
                 })
             }
@@ -189,8 +190,6 @@ extension MapVC: MKMapViewDelegate {
     }
     // 獲得照片的URL
     func retrieveUrls(forAnnotation annotation: DroppablePin, completion: @escaping CompletionHandler) {
-        imageURLArray = []
-        
         Alamofire.request(flickrURL(forApiKey: API_KEY, withAnnotation: annotation, andNumberOfPhoto: 40)).responseJSON { (response) in
             if response.result.error == nil {
                 guard let json = response.result.value as? Dictionary<String, AnyObject> else { return }
@@ -209,7 +208,6 @@ extension MapVC: MKMapViewDelegate {
     }
     // 獲得圖片並加入到imageArray裡面
     func retrieveImages(completion: @escaping CompletionHandler) {
-        imageArray = []
         for url in imageURLArray {
             Alamofire.request(url).responseImage(completionHandler: { (response) in
                 if response.result.error == nil {
@@ -259,11 +257,13 @@ extension MapVC: UICollectionViewDelegate, UICollectionViewDataSource {
     }
     // 有幾個Item
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 4
+        return self.imageArray.count
     }
     // cell內容物
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PHOTO_CELL, for: indexPath) as! PhotoCell
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: PHOTO_CELL, for: indexPath) as? PhotoCell else { return UICollectionViewCell() }
+        let imageView = UIImageView(image: imageArray[indexPath.row])
+        cell.addSubview(imageView)
         return cell
     }
 }
